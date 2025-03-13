@@ -35,3 +35,6 @@
 - **Purpose**: Header file for the `SerialSimulator` class.
 - **Details**: Declares a class that simulates UART data packets from an STM32, including methods to start/stop simulation and emit data signals.
 
+### `SerialSimulator.cpp`
+- **Purpose**: Implementation of the `SerialSimulator` class.
+- **Details**: Generates dummy sensor/actuator data using sine waves, packs it into UART-like packets with checksums, and emits them every 100ms when started.
