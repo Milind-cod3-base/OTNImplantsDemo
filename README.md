@@ -38,3 +38,7 @@
 ### `SerialSimulator.cpp`
 - **Purpose**: Implementation of the `SerialSimulator` class.
 - **Details**: Generates dummy sensor/actuator data using sine waves, packs it into UART-like packets with checksums, and emits them every 100ms when started.
+
+### `DataProcessor.h`
+- **Purpose**: Header file for the `DataProcessor` class.
+- **Details**: Defines a class to parse UART packets into `SensorData` and `ActuatorData` structs, with signals to emit processed data.
