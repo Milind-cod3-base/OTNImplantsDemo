@@ -24,3 +24,14 @@
 	├── OTNImplantsDemo.pro
 	├── README.md
 
+
+## File Descriptions
+
+### `OTNImplantsDemo.pro`
+- **Purpose**: Qt project configuration file.
+- **Details**: Specifies Qt modules (`core`, `gui`, `charts`, `widgets`), C++17 standard, source/header files, and build settings. Outputs the executable to a `test` subdirectory.
+
+### `SerialSimulator.h`
+- **Purpose**: Header file for the `SerialSimulator` class.
+- **Details**: Declares a class that simulates UART data packets from an STM32, including methods to start/stop simulation and emit data signals.
+
