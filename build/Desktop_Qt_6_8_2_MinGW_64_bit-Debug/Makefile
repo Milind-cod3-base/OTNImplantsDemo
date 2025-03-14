@@ -304,7 +304,10 @@ Makefile: ../../OTNImplantsDemo.pro D:/qt/6.8.2/mingw_64/mkspecs/win32-g++/qmake
 		D:/qt/6.8.2/mingw_64/mkspecs/features/yacc.prf \
 		D:/qt/6.8.2/mingw_64/mkspecs/features/lex.prf \
 		../../OTNImplantsDemo.pro \
+		D:/qt/6.8.2/mingw_64/lib/Qt6Charts.prl \
+		D:/qt/6.8.2/mingw_64/lib/Qt6OpenGLWidgets.prl \
 		D:/qt/6.8.2/mingw_64/lib/Qt6Widgets.prl \
+		D:/qt/6.8.2/mingw_64/lib/Qt6OpenGL.prl \
 		D:/qt/6.8.2/mingw_64/lib/Qt6Gui.prl \
 		D:/qt/6.8.2/mingw_64/lib/Qt6Core.prl \
 		D:/qt/6.8.2/mingw_64/lib/Qt6EntryPoint.prl \
@@ -544,7 +547,10 @@ D:/qt/6.8.2/mingw_64/mkspecs/features/exceptions.prf:
 D:/qt/6.8.2/mingw_64/mkspecs/features/yacc.prf:
 D:/qt/6.8.2/mingw_64/mkspecs/features/lex.prf:
 ../../OTNImplantsDemo.pro:
+D:/qt/6.8.2/mingw_64/lib/Qt6Charts.prl:
+D:/qt/6.8.2/mingw_64/lib/Qt6OpenGLWidgets.prl:
 D:/qt/6.8.2/mingw_64/lib/Qt6Widgets.prl:
+D:/qt/6.8.2/mingw_64/lib/Qt6OpenGL.prl:
 D:/qt/6.8.2/mingw_64/lib/Qt6Gui.prl:
 D:/qt/6.8.2/mingw_64/lib/Qt6Core.prl:
 D:/qt/6.8.2/mingw_64/lib/Qt6EntryPoint.prl:
