@@ -51,9 +51,19 @@ void Dashboard::setupUI() {
 
     // 3. Bottom Horizontal Layout: Chart Selector and Chart
     QHBoxLayout *chartLayout = new QHBoxLayout();
+
+    // Vertical layout for chart selector and its label
+    QVBoxLayout *selectorLayout = new QVBoxLayout();
+    QLabel *chartSelectorLabel = new QLabel("DataStream Navigator"); // Fancy label
     chartSelector = new QComboBox();
     chartSelector->addItems({"Shoulder Angle", "Elbow Angle", "Wrist Angle", "Grip Force"});
-    chartLayout->addWidget(chartSelector);
+    // Add spacer above to push content down slightly
+    selectorLayout->addItem(new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding));
+    selectorLayout->addWidget(chartSelectorLabel);
+    selectorLayout->addWidget(chartSelector);
+    // Add spacer below to fill remaining space
+    selectorLayout->addItem(new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding));
+    chartLayout->addLayout(selectorLayout);
 
     series = new QLineSeries();
     chart = new QChart();
@@ -66,11 +76,10 @@ void Dashboard::setupUI() {
     chartView->setRenderHint(QPainter::Antialiasing);
     chartLayout->addWidget(chartView);
 
-    // Adjust stretch factors: Chart takes more space than the selector
-    chartLayout->setStretch(0, 1); // Chart selector
+    // Adjust stretch factors: Chart takes more space than the selector layout
+    chartLayout->setStretch(0, 1); // Selector layout (label + dropdown)
     chartLayout->setStretch(1, 3); // Chart view
     mainLayout->addLayout(chartLayout);
-
     // Connect the chart selector for dynamic updates
     connect(chartSelector, &QComboBox::currentTextChanged, this, &Dashboard::onChartSelectorChanged);
 
