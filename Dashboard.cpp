@@ -49,12 +49,14 @@ void Dashboard::setupUI() {
 
     mainLayout->addLayout(groupLayout);
 
-    // 3. Bottom Horizontal Layout: Chart Selector and Chart
-    QHBoxLayout *chartLayout = new QHBoxLayout();
+    // 3. Bottom Group Box: Chart Metrics
+    QGroupBox *chartGroup = new QGroupBox("Chart Metrics");
+    QHBoxLayout *chartLayout = new QHBoxLayout(chartGroup);
 
     // Vertical layout for chart selector and its label
     QVBoxLayout *selectorLayout = new QVBoxLayout();
-    QLabel *chartSelectorLabel = new QLabel("DataStream Navigator"); // Fancy label
+    QLabel *chartSelectorLabel = new QLabel("Motion Metrics Hub"); // Creative, relevant label
+    chartSelectorLabel->setStyleSheet("color: #ff6200;"); // Set to orange directly
     chartSelector = new QComboBox();
     chartSelector->addItems({"Shoulder Angle", "Elbow Angle", "Wrist Angle", "Grip Force"});
     // Add spacer above to push content down slightly
@@ -79,25 +81,25 @@ void Dashboard::setupUI() {
     // Adjust stretch factors: Chart takes more space than the selector layout
     chartLayout->setStretch(0, 1); // Selector layout (label + dropdown)
     chartLayout->setStretch(1, 3); // Chart view
-    mainLayout->addLayout(chartLayout);
+    mainLayout->addWidget(chartGroup);
+
     // Connect the chart selector for dynamic updates
     connect(chartSelector, &QComboBox::currentTextChanged, this, &Dashboard::onChartSelectorChanged);
 
-    // Apply White and Orange Stylesheet
+    // Apply Metallic Grey, Orange, and Teal Stylesheet
     setStyleSheet(R"(
         /* Main background */
         QWidget {
-            background-color: white;
+            background-color: white; /* Main window background */
         }
 
-        /* Orange fonts for labels, buttons, and combo box */
+        /* Orange fonts for buttons and general labels */
         QLabel, QPushButton, QComboBox {
             color: #ff6200; /* Bright orange */
         }
-
-        /* Override for labels inside group boxes */
+        /* Teal fonts for labels inside group boxes */
         QGroupBox QLabel {
-            color: black; /* Teal for group box fonts */
+            color: black; /* Teal */
         }
 
         /* Thick orange group box borders */
@@ -116,6 +118,7 @@ void Dashboard::setupUI() {
             color: #ff6200; /* Orange title */
         }
 
+        /* Combo box styling with teal text */
         QComboBox {
             background-color: #f0f0f0; /* Light grey background */
             border: 1px solid #ff6200; /* Orange border */
@@ -135,9 +138,9 @@ void Dashboard::setupUI() {
         }
     )");
 
-    // Configure Chart for White Background with Orange Accents
-    chart->setBackgroundBrush(QBrush(Qt::white));
-    chart->setPlotAreaBackgroundBrush(QBrush(Qt::white));
+    // Configure Chart for Brighter Grey Background with Orange Accents
+    chart->setBackgroundBrush(QBrush(QColor("#E5E5E5"))); // Brighter grey
+    chart->setPlotAreaBackgroundBrush(QBrush(QColor("#E5E5E5"))); // Brighter grey
     chart->setPlotAreaBackgroundVisible(true);
     chart->setTitleBrush(QBrush(Qt::black)); // Black title for contrast
     QPen axisPen(Qt::black); // Black axes for visibility
@@ -145,10 +148,8 @@ void Dashboard::setupUI() {
     chart->axes(Qt::Vertical).first()->setLinePen(axisPen);
     chart->axes(Qt::Horizontal).first()->setLabelsColor(Qt::black);
     chart->axes(Qt::Vertical).first()->setLabelsColor(Qt::black);
-    //series->setPen(QPen(Qt::orange)); // Orange line for the series
     series->setPen(QPen(QColorConstants::Svg::orange)); // Orange line for the series
 }
-
 void Dashboard::onSensorDataUpdated(SensorData data) {
     shoulderAngleLabel->setText(QString("Shoulder Angle: %1°").arg(data.shoulderAngle, 0, 'f', 1));
     elbowAngleLabel->setText(QString("Elbow Angle: %1°").arg(data.elbowAngle, 0, 'f', 1));
