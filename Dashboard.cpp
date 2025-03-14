@@ -11,6 +11,19 @@ Dashboard::Dashboard(QWidget *parent) : QWidget(parent), timeStep(0), currentCha
 void Dashboard::setupUI() {
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
 
+
+    // Control Buttons and Chart Selector (Tip 2)
+    QHBoxLayout *controlLayout = new QHBoxLayout();
+    startButton = new QPushButton("Start Simulation");
+    stopButton = new QPushButton("Stop Simulation");
+    chartSelector = new QComboBox();
+    chartSelector->addItems({"Shoulder Angle", "Elbow Angle", "Wrist Angle", "Grip Force"});
+    controlLayout->addWidget(startButton);
+    controlLayout->addWidget(stopButton);
+    controlLayout->addWidget(chartSelector);
+    mainLayout->addLayout(controlLayout);
+
+
     // Sensor Data Section
     QGroupBox *sensorGroup = new QGroupBox("Sensor Data");
     QVBoxLayout *sensorLayout = new QVBoxLayout(sensorGroup);
@@ -46,17 +59,6 @@ void Dashboard::setupUI() {
     chartView = new QChartView(chart);
     chartView->setRenderHint(QPainter::Antialiasing);
     mainLayout->addWidget(chartView);
-
-    // Control Buttons and Chart Selector (Tip 2)
-    QHBoxLayout *controlLayout = new QHBoxLayout();
-    startButton = new QPushButton("Start Simulation");
-    stopButton = new QPushButton("Stop Simulation");
-    chartSelector = new QComboBox();
-    chartSelector->addItems({"Shoulder Angle", "Elbow Angle", "Wrist Angle", "Grip Force"});
-    controlLayout->addWidget(startButton);
-    controlLayout->addWidget(stopButton);
-    controlLayout->addWidget(chartSelector);
-    mainLayout->addLayout(controlLayout);
 
     // Connect buttons and combo box
     connect(startButton, &QPushButton::clicked, this, &Dashboard::onStartClicked);
