@@ -70,3 +70,53 @@ void Dashboard::setupUI() {
                   "QComboBox { background-color: #ecf0f1; color: #2c3e50; }");
 }
 
+void Dashboard::onSensorDataUpdated(SensorData data) {
+    shoulderAngleLabel->setText(QString("Shoulder Angle: %1°").arg(data.shoulderAngle, 0, 'f', 1));
+    elbowAngleLabel->setText(QString("Elbow Angle: %1°").arg(data.elbowAngle, 0, 'f', 1));
+    wristAngleLabel->setText(QString("Wrist Angle: %1°").arg(data.wristAngle, 0, 'f', 1));
+    gripForceLabel->setText(QString("Grip Force: %1 N").arg(data.gripForce, 0, 'f', 1));
+
+    if (currentChartData == "Shoulder Angle") {
+        updateChart("Shoulder Angle", data.shoulderAngle);
+    } else if (currentChartData == "Elbow Angle") {
+        updateChart("Elbow Angle", data.elbowAngle);
+    } else if (currentChartData == "Wrist Angle") {
+        updateChart("Wrist Angle", data.wristAngle);
+    } else if (currentChartData == "Grip Force") {
+        updateChart("Grip Force", data.gripForce);
+    }
+}
+
+void Dashboard::onActuatorDataUpdated(ActuatorData data) {
+    shoulderMotorLabel->setText(QString("Shoulder Motor: %1°").arg(data.shoulderMotor, 0, 'f', 1));
+    elbowMotorLabel->setText(QString("Elbow Motor: %1°").arg(data.elbowMotor, 0, 'f', 1));
+    wristMotorLabel->setText(QString("Wrist Motor: %1°").arg(data.wristMotor, 0, 'f', 1));
+}
+
+void Dashboard::updateChart(QString dataType, float value) {
+    series->append(timeStep++, value);
+    if (series->count() > 100) {
+        series->remove(0);
+    }
+    chart->setTitle(dataType + " History");
+    chart->axes(Qt::Horizontal).first()->setRange(timeStep - 100, timeStep);
+    if (dataType == "Grip Force") {
+        chart->axes(Qt::Vertical).first()->setRange(0, 100);
+    } else {
+        chart->axes(Qt::Vertical).first()->setRange(-30, 360);
+    }
+}
+
+void Dashboard::onStartClicked() {
+    // Start logic handled in main.cpp
+}
+
+void Dashboard::onStopClicked() {
+    // Stop logic handled in main.cpp
+}
+
+void Dashboard::onChartSelectorChanged(const QString &text) {
+    currentChartData = text;
+    series->clear();
+    timeStep = 0;
+}
