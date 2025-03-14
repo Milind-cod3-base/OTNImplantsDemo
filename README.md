@@ -1,5 +1,5 @@
 
-# OTNImplantsDemo
+# Dashboard: OTNImplantsDemo
 
 ## Overview
 `OTNImplantsDemo` is a Qt-based C++ application designed as a demo for OTN Implants, showcasing a dashboard for an arm prosthetic. It simulates sensor and actuator data from an STM32 microcontroller via UART, displaying real-time metrics and charts. 
@@ -8,6 +8,17 @@
 
 ## Note
 - The app uses a simulated UART interface; in a real scenario, `SerialSimulator` will be replaced with `QSerialPort` for STM32 communication.
+
+## Workflow
+
+1. Start app
+![OTNImplantsDemo Screenshot](resources/appFlow1.png)
+
+2. Start simulation
+![OTNImplantsDemo Screenshot](resources/appFlow2.png)
+
+3. Change Motion Metric from drop down to monitor Data History charts of different sensors.
+![OTNImplantsDemo Screenshot](resources/appFlow3.png)
 
 
 ### Features
