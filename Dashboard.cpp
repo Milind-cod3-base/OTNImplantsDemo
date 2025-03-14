@@ -74,24 +74,29 @@ void Dashboard::setupUI() {
     // Connect the chart selector for dynamic updates
     connect(chartSelector, &QComboBox::currentTextChanged, this, &Dashboard::onChartSelectorChanged);
 
-    // Apply Dark Mode Stylesheet
+    // Apply White and Orange Stylesheet
     setStyleSheet(R"(
         /* Main background */
         QWidget {
-            background-color: black;
+            background-color: white;
         }
 
-        /* Text visibility on black background */
+        /* Orange fonts for labels, buttons, and combo box */
         QLabel, QPushButton, QComboBox {
-            color: white;
+            color: #ff6200; /* Bright orange */
         }
 
-        /* Thick group box borders */
+        /* Override for labels inside group boxes */
+        QGroupBox QLabel {
+            color: black; /* Teal for group box fonts */
+        }
+
+        /* Thick orange group box borders */
         QGroupBox {
-            border: 2px solid white;
+            border: 2px solid #ff6200; /* Orange border */
             border-radius: 5px;
             margin-top: 1em;
-            color: white;
+            color: #ff6200; /* Orange title */
         }
 
         /* Group box title styling */
@@ -99,39 +104,42 @@ void Dashboard::setupUI() {
             subcontrol-origin: margin;
             subcontrol-position: top left;
             padding: 0 3px;
-            color: white;
+            color: #ff6200; /* Orange title */
         }
 
-        /* Combo box styling for dark theme */
         QComboBox {
-            background-color: #2c3e50;
-            border: 1px solid white;
+            background-color: #f0f0f0; /* Light grey background */
+            border: 1px solid #ff6200; /* Orange border */
+            color: black; /* Teal text */
         }
         QComboBox QAbstractItemView {
-            background-color: #2c3e50;
-            color: white;
+            background-color: #f0f0f0; /* Light grey dropdown */
+            color: black; /* Teal text in dropdown */
         }
 
-        /* Button styling */
+        /* Orange buttons */
         QPushButton {
-            background-color: #3498db;
+            background-color: #ff6200; /* Orange background */
             border: none;
             padding: 5px;
+            color: white; /* White text for contrast */
         }
     )");
 
-    // Configure Chart for Dark Mode
-    chart->setBackgroundBrush(QBrush(Qt::black));
-    chart->setPlotAreaBackgroundBrush(QBrush(Qt::black));
+    // Configure Chart for White Background with Orange Accents
+    chart->setBackgroundBrush(QBrush(Qt::white));
+    chart->setPlotAreaBackgroundBrush(QBrush(Qt::white));
     chart->setPlotAreaBackgroundVisible(true);
-    chart->setTitleBrush(QBrush(Qt::white));
-    QPen axisPen(Qt::white);
+    chart->setTitleBrush(QBrush(Qt::black)); // Black title for contrast
+    QPen axisPen(Qt::black); // Black axes for visibility
     chart->axes(Qt::Horizontal).first()->setLinePen(axisPen);
     chart->axes(Qt::Vertical).first()->setLinePen(axisPen);
-    chart->axes(Qt::Horizontal).first()->setLabelsColor(Qt::white);
-    chart->axes(Qt::Vertical).first()->setLabelsColor(Qt::white);
-    series->setPen(QPen(Qt::white));
+    chart->axes(Qt::Horizontal).first()->setLabelsColor(Qt::black);
+    chart->axes(Qt::Vertical).first()->setLabelsColor(Qt::black);
+    //series->setPen(QPen(Qt::orange)); // Orange line for the series
+    series->setPen(QPen(QColorConstants::Svg::orange)); // Orange line for the series
 }
+
 void Dashboard::onSensorDataUpdated(SensorData data) {
     shoulderAngleLabel->setText(QString("Shoulder Angle: %1°").arg(data.shoulderAngle, 0, 'f', 1));
     elbowAngleLabel->setText(QString("Elbow Angle: %1°").arg(data.elbowAngle, 0, 'f', 1));
