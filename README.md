@@ -4,6 +4,7 @@
 ## Overview
 `OTNImplantsDemo` is a Qt-based C++ application designed as a demo for OTN Implants, showcasing a dashboard for an arm prosthetic. It simulates sensor and actuator data from an STM32 microcontroller via UART, displaying real-time metrics and charts. 
 
+![OTNImplantsDemo Screenshot](resources/app.png)
 
 ### Features
 - Displays sensor data (shoulder angle, elbow angle, wrist angle, grip force) and actuator data (motor positions).
