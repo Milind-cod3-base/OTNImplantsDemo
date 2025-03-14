@@ -6,6 +6,10 @@
 
 ![OTNImplantsDemo Screenshot](resources/app.png)
 
+## Note
+- The app uses a simulated UART interface; in a real scenario, `SerialSimulator` will be replaced with `QSerialPort` for STM32 communication.
+
+
 ### Features
 - Displays sensor data (shoulder angle, elbow angle, wrist angle, grip force) and actuator data (motor positions).
 - Real-time chart visualization with selectable data types (shoulder angle, elbow angle, wrist angle, grip force).
@@ -79,7 +83,5 @@
    - Navigate to `test/` directory.
    - Execute `OTNImplantsDemo.exe`.
 
-## Note
-- The app uses a simulated UART interface; in a real scenario, `SerialSimulator` will be replaced with `QSerialPort` for STM32 communication.
 
 
