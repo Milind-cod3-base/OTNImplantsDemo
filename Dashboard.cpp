@@ -9,22 +9,21 @@ Dashboard::Dashboard(QWidget *parent) : QWidget(parent), timeStep(0), currentCha
 }
 
 void Dashboard::setupUI() {
+    // Main vertical layout for the entire UI
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
 
-
-    // Control Buttons and Chart Selector (Tip 2)
-    QHBoxLayout *controlLayout = new QHBoxLayout();
+    // 1. Top Horizontal Layout: Start and Stop Buttons
+    QHBoxLayout *buttonLayout = new QHBoxLayout();
     startButton = new QPushButton("Start Simulation");
     stopButton = new QPushButton("Stop Simulation");
-    chartSelector = new QComboBox();
-    chartSelector->addItems({"Shoulder Angle", "Elbow Angle", "Wrist Angle", "Grip Force"});
-    controlLayout->addWidget(startButton);
-    controlLayout->addWidget(stopButton);
-    controlLayout->addWidget(chartSelector);
-    mainLayout->addLayout(controlLayout);
+    buttonLayout->addWidget(startButton);
+    buttonLayout->addWidget(stopButton);
+    mainLayout->addLayout(buttonLayout);
 
+    // 2. Middle Horizontal Layout: Sensor and Actuator Group Boxes
+    QHBoxLayout *groupLayout = new QHBoxLayout();
 
-    // Sensor Data Section
+    // Sensor Data Group Box
     QGroupBox *sensorGroup = new QGroupBox("Sensor Data");
     QVBoxLayout *sensorLayout = new QVBoxLayout(sensorGroup);
     shoulderAngleLabel = new QLabel("Shoulder Angle: 0.0°");
@@ -35,9 +34,9 @@ void Dashboard::setupUI() {
     sensorLayout->addWidget(elbowAngleLabel);
     sensorLayout->addWidget(wristAngleLabel);
     sensorLayout->addWidget(gripForceLabel);
-    mainLayout->addWidget(sensorGroup);
+    groupLayout->addWidget(sensorGroup);
 
-    // Actuator Data Section
+    // Actuator Data Group Box
     QGroupBox *actuatorGroup = new QGroupBox("Actuator Data");
     QVBoxLayout *actuatorLayout = new QVBoxLayout(actuatorGroup);
     shoulderMotorLabel = new QLabel("Shoulder Motor: 0.0°");
@@ -46,9 +45,16 @@ void Dashboard::setupUI() {
     actuatorLayout->addWidget(shoulderMotorLabel);
     actuatorLayout->addWidget(elbowMotorLabel);
     actuatorLayout->addWidget(wristMotorLabel);
-    mainLayout->addWidget(actuatorGroup);
+    groupLayout->addWidget(actuatorGroup);
 
-    // Chart Section
+    mainLayout->addLayout(groupLayout);
+
+    // 3. Bottom Horizontal Layout: Chart Selector and Chart
+    QHBoxLayout *chartLayout = new QHBoxLayout();
+    chartSelector = new QComboBox();
+    chartSelector->addItems({"Shoulder Angle", "Elbow Angle", "Wrist Angle", "Grip Force"});
+    chartLayout->addWidget(chartSelector);
+
     series = new QLineSeries();
     chart = new QChart();
     chart->addSeries(series);
@@ -58,20 +64,74 @@ void Dashboard::setupUI() {
     chart->axes(Qt::Vertical).first()->setRange(0, 360);
     chartView = new QChartView(chart);
     chartView->setRenderHint(QPainter::Antialiasing);
-    mainLayout->addWidget(chartView);
+    chartLayout->addWidget(chartView);
 
-    // Connect buttons and combo box
-    connect(startButton, &QPushButton::clicked, this, &Dashboard::onStartClicked);
-    connect(stopButton, &QPushButton::clicked, this, &Dashboard::onStopClicked);
+    // Adjust stretch factors: Chart takes more space than the selector
+    chartLayout->setStretch(0, 1); // Chart selector
+    chartLayout->setStretch(1, 3); // Chart view
+    mainLayout->addLayout(chartLayout);
+
+    // Connect the chart selector for dynamic updates
     connect(chartSelector, &QComboBox::currentTextChanged, this, &Dashboard::onChartSelectorChanged);
 
-    // Styling (Tip 1)
-    setStyleSheet("QGroupBox { font-weight: bold; color: #2c3e50; } "
-                  "QLabel { font-size: 14px; color: #34495e; } "
-                  "QPushButton { background-color: #3498db; color: white; border: none; padding: 5px; } "
-                  "QComboBox { background-color: #ecf0f1; color: #2c3e50; }");
-}
+    // Apply Dark Mode Stylesheet
+    setStyleSheet(R"(
+        /* Main background */
+        QWidget {
+            background-color: black;
+        }
 
+        /* Text visibility on black background */
+        QLabel, QPushButton, QComboBox {
+            color: white;
+        }
+
+        /* Thick group box borders */
+        QGroupBox {
+            border: 2px solid white;
+            border-radius: 5px;
+            margin-top: 1em;
+            color: white;
+        }
+
+        /* Group box title styling */
+        QGroupBox::title {
+            subcontrol-origin: margin;
+            subcontrol-position: top left;
+            padding: 0 3px;
+            color: white;
+        }
+
+        /* Combo box styling for dark theme */
+        QComboBox {
+            background-color: #2c3e50;
+            border: 1px solid white;
+        }
+        QComboBox QAbstractItemView {
+            background-color: #2c3e50;
+            color: white;
+        }
+
+        /* Button styling */
+        QPushButton {
+            background-color: #3498db;
+            border: none;
+            padding: 5px;
+        }
+    )");
+
+    // Configure Chart for Dark Mode
+    chart->setBackgroundBrush(QBrush(Qt::black));
+    chart->setPlotAreaBackgroundBrush(QBrush(Qt::black));
+    chart->setPlotAreaBackgroundVisible(true);
+    chart->setTitleBrush(QBrush(Qt::white));
+    QPen axisPen(Qt::white);
+    chart->axes(Qt::Horizontal).first()->setLinePen(axisPen);
+    chart->axes(Qt::Vertical).first()->setLinePen(axisPen);
+    chart->axes(Qt::Horizontal).first()->setLabelsColor(Qt::white);
+    chart->axes(Qt::Vertical).first()->setLabelsColor(Qt::white);
+    series->setPen(QPen(Qt::white));
+}
 void Dashboard::onSensorDataUpdated(SensorData data) {
     shoulderAngleLabel->setText(QString("Shoulder Angle: %1°").arg(data.shoulderAngle, 0, 'f', 1));
     elbowAngleLabel->setText(QString("Elbow Angle: %1°").arg(data.elbowAngle, 0, 'f', 1));
