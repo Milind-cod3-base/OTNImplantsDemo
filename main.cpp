@@ -1,8 +1,8 @@
 #include <QApplication>
 #include <QScreen>
 #include <QGuiApplication>
-#include <QSplashScreen>  // Added for splash screen
-#include <QTimer>         // Added for timing the splash screen
+#include <QSplashScreen>
+#include <QTimer>
 #include "SerialSimulator.h"
 #include "DataProcessor.h"
 #include "Dashboard.h"
@@ -10,13 +10,14 @@
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
 
-    // Create and show the splash screen using a direct file path
+    // Load the logo and scale it to 130% of its original size
     QPixmap pixmap("logo.png");  // Assumes logo.png is in the same directory as the executable
     if (pixmap.isNull()) {
-        // Optional: Handle case where logo.png can't be loaded
         qWarning("Failed to load logo.png - check file path");
     }
-    QSplashScreen splash(pixmap);
+    // Scale the pixmap to 1.3 times its original size (30% bigger)
+    QPixmap scaledPixmap = pixmap.scaled(pixmap.size() * 1.3, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    QSplashScreen splash(scaledPixmap);
     splash.show();
     app.processEvents();  // Ensure the splash screen is displayed immediately
 
@@ -50,7 +51,7 @@ int main(int argc, char *argv[]) {
     dashboard.setGeometry(x, y, width, height);
 
     // Use a single-shot timer to close splash and show dashboard after 2 seconds
-    QTimer::singleShot(2000, [&splash, &dashboard]() {
+    QTimer::singleShot(2500, [&splash, &dashboard]() {
         splash.close();      // Close the splash screen
         dashboard.show();    // Show the main dashboard
     });
