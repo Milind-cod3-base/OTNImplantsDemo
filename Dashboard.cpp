@@ -55,15 +55,13 @@ void Dashboard::setupUI() {
 
     // Vertical layout for chart selector and its label
     QVBoxLayout *selectorLayout = new QVBoxLayout();
-    QLabel *chartSelectorLabel = new QLabel("Motion Metrics Hub"); // Creative, relevant label
-    chartSelectorLabel->setStyleSheet("color: #ff6200;"); // Set to orange directly
+    QLabel *chartSelectorLabel = new QLabel("Motion Metrics Hub");
+    chartSelectorLabel->setStyleSheet("color: #ff6200;");
     chartSelector = new QComboBox();
     chartSelector->addItems({"Shoulder Angle", "Elbow Angle", "Wrist Angle", "Grip Force"});
-    // Add spacer above to push content down slightly
     selectorLayout->addItem(new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding));
     selectorLayout->addWidget(chartSelectorLabel);
     selectorLayout->addWidget(chartSelector);
-    // Add spacer below to fill remaining space
     selectorLayout->addItem(new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding));
     chartLayout->addLayout(selectorLayout);
 
@@ -78,78 +76,57 @@ void Dashboard::setupUI() {
     chartView->setRenderHint(QPainter::Antialiasing);
     chartLayout->addWidget(chartView);
 
-    // Adjust stretch factors: Chart takes more space than the selector layout
-    chartLayout->setStretch(0, 1); // Selector layout (label + dropdown)
-    chartLayout->setStretch(1, 3); // Chart view
+    chartLayout->setStretch(0, 1);
+    chartLayout->setStretch(1, 3);
     mainLayout->addWidget(chartGroup);
 
-    // Connect the chart selector for dynamic updates
     connect(chartSelector, &QComboBox::currentTextChanged, this, &Dashboard::onChartSelectorChanged);
 
-    // Apply Metallic Grey, Orange, and Teal Stylesheet
     setStyleSheet(R"(
-        /* Main background */
-        QWidget {
-            background-color: white; /* Main window background */
-        }
-
-        /* Orange fonts for buttons and general labels */
-        QLabel, QPushButton, QComboBox {
-            color: #ff6200; /* Bright orange */
-        }
-        /* Teal fonts for labels inside group boxes */
-        QGroupBox QLabel {
-            color: black; /* Teal */
-        }
-
-        /* Thick orange group box borders */
+        QWidget { background-color: white; }
+        QLabel, QPushButton, QComboBox { color: #ff6200; }
+        QGroupBox QLabel { color: black; }
         QGroupBox {
-            border: 2px solid #ff6200; /* Orange border */
+            border: 2px solid #ff6200;
             border-radius: 5px;
             margin-top: 1em;
-            color: #ff6200; /* Orange title */
+            color: #ff6200;
         }
-
-        /* Group box title styling */
         QGroupBox::title {
             subcontrol-origin: margin;
             subcontrol-position: top left;
             padding: 0 3px;
-            color: #ff6200; /* Orange title */
+            color: #ff6200;
         }
-
-        /* Combo box styling with teal text */
         QComboBox {
-            background-color: #f0f0f0; /* Light grey background */
-            border: 1px solid #ff6200; /* Orange border */
-            color: black; /* Teal text */
+            background-color: #f0f0f0;
+            border: 1px solid #ff6200;
+            color: black;
         }
         QComboBox QAbstractItemView {
-            background-color: #f0f0f0; /* Light grey dropdown */
-            color: black; /* Teal text in dropdown */
+            background-color: #f0f0f0;
+            color: black;
         }
-
-        /* Orange buttons */
         QPushButton {
-            background-color: #ff6200; /* Orange background */
+            background-color: #ff6200;
             border: none;
             padding: 5px;
-            color: white; /* White text for contrast */
+            color: white;
         }
     )");
 
-    // Configure Chart for Brighter Grey Background with Orange Accents
-    chart->setBackgroundBrush(QBrush(QColor("#E5E5E5"))); // Brighter grey
-    chart->setPlotAreaBackgroundBrush(QBrush(QColor("#E5E5E5"))); // Brighter grey
+    chart->setBackgroundBrush(QBrush(QColor("#E5E5E5")));
+    chart->setPlotAreaBackgroundBrush(QBrush(QColor("#E5E5E5")));
     chart->setPlotAreaBackgroundVisible(true);
-    chart->setTitleBrush(QBrush(Qt::black)); // Black title for contrast
-    QPen axisPen(Qt::black); // Black axes for visibility
+    chart->setTitleBrush(QBrush(Qt::black));
+    QPen axisPen(Qt::black);
     chart->axes(Qt::Horizontal).first()->setLinePen(axisPen);
     chart->axes(Qt::Vertical).first()->setLinePen(axisPen);
     chart->axes(Qt::Horizontal).first()->setLabelsColor(Qt::black);
     chart->axes(Qt::Vertical).first()->setLabelsColor(Qt::black);
-    series->setPen(QPen(QColorConstants::Svg::orange)); // Orange line for the series
+    series->setPen(QPen(QColorConstants::Svg::orange));
 }
+
 void Dashboard::onSensorDataUpdated(SensorData data) {
     shoulderAngleLabel->setText(QString("Shoulder Angle: %1°").arg(data.shoulderAngle, 0, 'f', 1));
     elbowAngleLabel->setText(QString("Elbow Angle: %1°").arg(data.elbowAngle, 0, 'f', 1));
@@ -179,7 +156,9 @@ void Dashboard::updateChart(QString dataType, float value) {
         series->remove(0);
     }
     chart->setTitle(dataType + " History");
-    chart->axes(Qt::Horizontal).first()->setRange(timeStep - 100, timeStep);
+    // Ensure the X-axis never goes below 0
+    qreal xMin = qMax(0, timeStep - 100);  // Start at 0 if timeStep < 100
+    chart->axes(Qt::Horizontal).first()->setRange(xMin, timeStep);
     if (dataType == "Grip Force") {
         chart->axes(Qt::Vertical).first()->setRange(0, 100);
     } else {
@@ -188,7 +167,10 @@ void Dashboard::updateChart(QString dataType, float value) {
 }
 
 void Dashboard::onStartClicked() {
-    // Start logic handled in main.cpp
+    // Reset timeStep and clear the chart when the simulation starts
+    timeStep = 0;
+    series->clear();
+    chart->axes(Qt::Horizontal).first()->setRange(0, 100);  // Reset X-axis to start at 0
 }
 
 void Dashboard::onStopClicked() {
@@ -199,4 +181,5 @@ void Dashboard::onChartSelectorChanged(const QString &text) {
     currentChartData = text;
     series->clear();
     timeStep = 0;
+    chart->axes(Qt::Horizontal).first()->setRange(0, 100);  // Reset X-axis to start at 0
 }
